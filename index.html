@@ -250,21 +250,25 @@
     // Cursor-driven cycling
     let lastX = null;
     let moveTimeout;
+    let lastChange = 0;
+    const cooldown = 300;
 
     document.addEventListener('mousemove', (e) => {
+      const now = Date.now();
       if (lastX !== null) {
         const dx = e.clientX - lastX;
-        if (Math.abs(dx) > 2) {
+        if (Math.abs(dx) > 8 && now - lastChange > cooldown) {
           if (dx > 0) {
             goTo(current + 1);
           } else {
             goTo(current - 1 < 0 ? slides.length - 1 : current - 1);
           }
+          lastChange = now;
         }
       }
       lastX = e.clientX;
       clearTimeout(moveTimeout);
-      moveTimeout = setTimeout(() => { lastX = null; }, 100);
+      moveTimeout = setTimeout(() => { lastX = null; }, 150);
     });
 
     // About modal
