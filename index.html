@@ -216,7 +216,6 @@
     const slides = document.querySelectorAll('.slide');
     const dots = document.querySelectorAll('.dot');
     let current = 0;
-    let timer;
 
     function goTo(index) {
       slides[current].classList.remove('active');
@@ -226,15 +225,27 @@
       dots[current].classList.add('active');
     }
 
-    function next() {
-      goTo(current + 1);
+    // Cursor-driven cycling
+    let moveTimeout;
+    let cycleTimer;
+    let moving = false;
+
+    function startCycling() {
+      if (moving) return;
+      moving = true;
+      cycleTimer = setInterval(() => goTo(current + 1), 300);
     }
 
-    function startTimer() {
-      timer = setInterval(next, 5000);
+    function stopCycling() {
+      moving = false;
+      clearInterval(cycleTimer);
     }
 
-    startTimer();
+    document.addEventListener('mousemove', () => {
+      startCycling();
+      clearTimeout(moveTimeout);
+      moveTimeout = setTimeout(stopCycling, 150);
+    });
 
     // About modal
     const overlay = document.getElementById('overlay');
@@ -242,16 +253,8 @@
     const closeBtn = document.getElementById('closeBtn');
     const overlayBg = document.getElementById('overlayBg');
 
-    aboutBtn.addEventListener('click', () => {
-      overlay.classList.add('visible');
-      clearInterval(timer);
-    });
-
-    function closeOverlay() {
-      overlay.classList.remove('visible');
-      startTimer();
-    }
-
+    aboutBtn.addEventListener('click', () => overlay.classList.add('visible'));
+    function closeOverlay() { overlay.classList.remove('visible'); }
     closeBtn.addEventListener('click', closeOverlay);
     overlayBg.addEventListener('click', closeOverlay);
   </script>
