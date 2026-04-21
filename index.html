@@ -63,15 +63,8 @@
       z-index: 1;
     }
 
-    /* ── SLIDE COUNTER ── */
     .counter {
-      position: fixed;
-      bottom: 32px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 10;
-      display: flex;
-      gap: 8px;
+      display: none;
     }
 
     .dot {
@@ -158,7 +151,7 @@
 
     .about-card p {
       font-weight: 300;
-      font-size: 15px;
+      font-size: 12px;
       line-height: 1.75;
       color: rgba(0,0,0,0.85);
     }
@@ -209,7 +202,6 @@
     <div class="overlay-bg" id="overlayBg"></div>
     <div class="about-card">
       <button class="close-btn" id="closeBtn">×</button>
-      <h2>About</h2>
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
     </div>
   </div>
@@ -235,7 +227,7 @@
     function startCycling() {
       if (moving) return;
       moving = true;
-      cycleTimer = setInterval(() => goTo(current + 1), 120);
+      cycleTimer = setInterval(() => goTo(current + 1), 200);
     }
 
     function stopCycling() {
@@ -246,7 +238,7 @@
     document.addEventListener('mousemove', () => {
       startCycling();
       clearTimeout(moveTimeout);
-      moveTimeout = setTimeout(stopCycling, 80);
+      moveTimeout = setTimeout(stopCycling, 120);
     });
 
     // About modal
