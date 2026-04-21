@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stella Matutina</title>
+  <style>
+    @font-face {
+      font-family: 'ToftH';
+      src: url('fonts/ToftH-Grotesk-Bold.otf') format('opentype');
+      font-weight: 700;
+    }
+    @font-face {
+      font-family: 'ToftH';
+      src: url('fonts/ToftH-Grotesk-Light.otf') format('opentype');
+      font-weight: 300;
+    }
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #0a0a0a;
+      font-family: 'ToftH', sans-serif;
+    }
+
+    /* ── GALLERY ── */
+    .gallery {
+      position: fixed;
+      inset: 0;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 1.2s ease-in-out;
+    }
+
+    .slide.active {
+      opacity: 1;
+    }
+
+    .slide:nth-child(1) { background-image: url('images/01.jpg'); background-color: #1a1a2e; }
+    .slide:nth-child(2) { background-image: url('images/02.jpg'); background-color: #16213e; }
+    .slide:nth-child(3) { background-image: url('images/03.jpg'); background-color: #0f3460; }
+
+    /* subtle dark vignette over images */
+    .gallery::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.45) 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ── SLIDE COUNTER ── */
+    .counter {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      transition: background 0.4s ease;
+    }
+
+    .dot.active {
+      background: rgba(255,255,255,0.9);
+    }
+
+    /* ── ABOUT BUTTON ── */
+    .about-btn {
+      position: fixed;
+      top: 28px;
+      right: 36px;
+      z-index: 10;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'ToftH', sans-serif;
+      font-weight: 300;
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.85);
+      padding: 6px 0;
+      transition: color 0.2s ease;
+    }
+
+    .about-btn:hover {
+      color: #fff;
+    }
+
+    /* ── OVERLAY ── */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+
+    .overlay.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .overlay-bg {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    .about-card {
+      position: relative;
+      z-index: 1;
+      background: rgba(12, 12, 12, 0.72);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 48px 52px;
+      max-width: 480px;
+      width: calc(100% - 48px);
+    }
+
+    .about-card h2 {
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 20px;
+    }
+
+    .about-card p {
+      font-weight: 300;
+      font-size: 15px;
+      line-height: 1.75;
+      color: rgba(255,255,255,0.82);
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'ToftH', sans-serif;
+      font-weight: 300;
+      font-size: 20px;
+      color: rgba(255,255,255,0.4);
+      line-height: 1;
+      transition: color 0.2s ease;
+    }
+
+    .close-btn:hover {
+      color: rgba(255,255,255,0.9);
+    }
+
+    /* ── WORDMARK ── */
+    .wordmark {
+      position: fixed;
+      bottom: 28px;
+      right: 36px;
+      z-index: 10;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- GALLERY -->
+  <div class="gallery" id="gallery">
+    <div class="slide active"></div>
+    <div class="slide"></div>
+    <div class="slide"></div>
+  </div>
+
+  <!-- DOTS -->
+  <div class="counter" id="counter">
+    <div class="dot active"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+
+  <!-- WORDMARK -->
+  <div class="wordmark">Stella Matutina</div>
+
+  <!-- ABOUT BUTTON -->
+  <button class="about-btn" id="aboutBtn">About</button>
+
+  <!-- ABOUT OVERLAY -->
+  <div class="overlay" id="overlay">
+    <div class="overlay-bg" id="overlayBg"></div>
+    <div class="about-card">
+      <button class="close-btn" id="closeBtn">×</button>
+      <h2>About</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </div>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.dot');
+    let current = 0;
+    let timer;
+
+    function goTo(index) {
+      slides[current].classList.remove('active');
+      dots[current].classList.remove('active');
+      current = index % slides.length;
+      slides[current].classList.add('active');
+      dots[current].classList.add('active');
+    }
+
+    function next() {
+      goTo(current + 1);
+    }
+
+    function startTimer() {
+      timer = setInterval(next, 4000);
+    }
+
+    startTimer();
+
+    // About modal
+    const overlay = document.getElementById('overlay');
+    const aboutBtn = document.getElementById('aboutBtn');
+    const closeBtn = document.getElementById('closeBtn');
+    const overlayBg = document.getElementById('overlayBg');
+
+    aboutBtn.addEventListener('click', () => {
+      overlay.classList.add('visible');
+      clearInterval(timer);
+    });
+
+    function closeOverlay() {
+      overlay.classList.remove('visible');
+      startTimer();
+    }
+
+    closeBtn.addEventListener('click', closeOverlay);
+    overlayBg.addEventListener('click', closeOverlay);
+  </script>
+
+</body>
+</html>
