@@ -248,27 +248,25 @@
     }
 
     // Cursor-driven cycling
-    let lastX = null;
     let moveTimeout;
-    let lastChange = 0;
-    const cooldown = 300;
+    let cycleTimer;
+    let moving = false;
 
-    document.addEventListener('mousemove', (e) => {
-      const now = Date.now();
-      if (lastX !== null) {
-        const dx = e.clientX - lastX;
-        if (Math.abs(dx) > 8 && now - lastChange > cooldown) {
-          if (dx > 0) {
-            goTo(current + 1);
-          } else {
-            goTo(current - 1 < 0 ? slides.length - 1 : current - 1);
-          }
-          lastChange = now;
-        }
-      }
-      lastX = e.clientX;
+    function startCycling() {
+      if (moving) return;
+      moving = true;
+      cycleTimer = setInterval(() => goTo(current + 1), 200);
+    }
+
+    function stopCycling() {
+      moving = false;
+      clearInterval(cycleTimer);
+    }
+
+    document.addEventListener('mousemove', () => {
+      startCycling();
       clearTimeout(moveTimeout);
-      moveTimeout = setTimeout(() => { lastX = null; }, 150);
+      moveTimeout = setTimeout(stopCycling, 120);
     });
 
     // About modal
